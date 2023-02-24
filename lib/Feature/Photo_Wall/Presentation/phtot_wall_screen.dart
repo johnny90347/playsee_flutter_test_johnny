@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:playsee_flutter_test_johnny/Feature/Photo_Wall/Controller/photo_wall_controller.dart';
 import 'package:playsee_flutter_test_johnny/Feature/Photo_Wall/Presentation/Components/image_cell.dart';
@@ -37,21 +38,30 @@ class _PhotoWallScreenState extends State<PhotoWallScreen> {
       backgroundColor: Colors.black,
       body: GetBuilder<PhotoWallController>(
         builder: (ctr) => Container(
-          width: screenSize.width,
-          height: screenSize.height,
-          child: ctr.photoData.length == 0
-              ? LoadingIndicator()
-              : GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3, //3列
-                    childAspectRatio: 186 / 254,
-                    mainAxisSpacing: 3,
-                    crossAxisSpacing: 3,
-                  ),
-                  itemCount: ctr.photoData.length,
-                  itemBuilder: (context, index) => ImageCell(id: ctr.photoData[index].id),
-                ),
-        ),
+            width: screenSize.width,
+            height: screenSize.height,
+            child: ctr.photoData.length == 0
+                ? LoadingIndicator()
+                : GridView.custom(
+                    gridDelegate: SliverQuiltedGridDelegate(
+                      crossAxisCount: 3,
+                      mainAxisSpacing: 4,
+                      crossAxisSpacing: 4,
+                      repeatPattern: QuiltedGridRepeatPattern.same,
+                      pattern: [
+                        QuiltedGridTile(1, 1),
+                        QuiltedGridTile(1, 1),
+                        QuiltedGridTile(1, 1),
+                        QuiltedGridTile(2, 2),
+                        QuiltedGridTile(1, 1),
+                        QuiltedGridTile(1, 1),
+                      ],
+                    ),
+                    childrenDelegate: SliverChildBuilderDelegate(
+                      childCount: ctr.photoData.length,
+                      (context, index) => ImageCell(id: ctr.photoData[index].id),
+                    ),
+                  )),
       ),
     );
   }
